@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import MongoDBConfig from './configs/database/mongodb/mongodb.config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { AdafruitModule } from './adafruit/adafruit.module';
 
 const {
   username,
@@ -18,6 +19,7 @@ const {
     UserModule,
     MongooseModule.forRoot(`mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${dbname}?retryWrites=true&w=majority`),
     AuthModule,
+    AdafruitModule
   ],
   controllers: [AppController],
   providers: [AppService],

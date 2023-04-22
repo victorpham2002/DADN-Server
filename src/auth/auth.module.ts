@@ -7,6 +7,8 @@ import jwtConfig from "src/configs/jwt/jwt.config";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { AccessTokenStrategy } from "./strategies/accessToken.strategy";
 import { RefreshTokenStrategy } from "./strategies/refreshToken.strategy";
+import { StoreModule } from "src/store/store.module";
+import { HttpModule } from "@nestjs/axios";
 
 @Module({
     imports: [
@@ -15,9 +17,15 @@ import { RefreshTokenStrategy } from "./strategies/refreshToken.strategy";
             // global: true,
             // secret: jwtConfig.secret,
             // signOptions: { expiresIn: '1 days' },
-        })
+        }),
+        StoreModule.register({
+            dirname: './src/store/online_user_list',
+            filename: 'online_user_list.json'
+        }),
+        HttpModule,
     ],
     controllers: [AuthController],
-    providers: [AuthService, LocalStrategy, AccessTokenStrategy, RefreshTokenStrategy]
+    providers: [AuthService, LocalStrategy, AccessTokenStrategy, RefreshTokenStrategy],
+    exports: [AuthService]
 })
 export class AuthModule{}

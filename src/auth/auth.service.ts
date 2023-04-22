@@ -7,26 +7,39 @@ import { JwtPayload } from "./types/jwtPayload.type";
 import jwtConfig from "src/configs/jwt/jwt.config";
 import bcryptConfig from "src/configs/bcrypt/bcrypt.config";
 import { CreateUserDto, UpdateUserDto } from "src/user/dtos/user.dto";
-
+import { StoreService } from "src/store/store.service";
+import { HttpService } from "@nestjs/axios";
+import AdafruitConfig from "src/configs/adafruit/adafruit.config";
+import { catchError, firstValueFrom } from "rxjs";
+import { AxiosError } from "axios";
 @Injectable()
 export class AuthService{
+    onlineUserList : Map<string, any>;
+
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
-        
-    ){}
+        private readonly storeService: StoreService,
+        private readonly httpService: HttpService
+    ){
+        this.onlineUserList = new Map(Object.entries(storeService.load() as Object));
+    }
 
     async signUp(createUserDto: CreateUserDto){
         const user = await this.userService.createNewUser(createUserDto);
         const tokens = await this.getTokens(user._id as unknown as string, user.username as unknown as string)
         await this.updateRefreshToken(user._id as unknown as string, tokens.refreshToken);
+        
+        await this.addOnlineUser(user._id.toString(), user.adafruitToken as string);
         return tokens;
     }
 
     async signIn(user: UserDocument): Promise<any>{
         const payload = { username: user.username as string, sub: user._id as unknown as string} as JwtPayload;
         const tokens =  await this.getTokens(payload.sub, payload.username);
-        await this.updateRefreshToken(payload.sub, tokens.refreshToken)
+        await this.updateRefreshToken(payload.sub, tokens.refreshToken);
+        
+        await this.addOnlineUser(user._id.toString(), user.adafruitToken as string);
         return tokens;
     }
 
@@ -59,10 +72,11 @@ export class AuthService{
     }
 
     async logout(userId: string) {
+        this.deleteOnlineUser(userId);
         return this.userService.updateUser(userId, { refreshToken: null } as UpdateUserDto);
     }
     
-    async updateRefreshToken(userId: string, refreshToken: string){
+    private async updateRefreshToken(userId: string, refreshToken: string){
         const hashedRefreshToken = await bcrypt.hash(refreshToken, bcryptConfig.rounds);
         return this.userService.updateUser(userId, { refreshToken: hashedRefreshToken } as UpdateUserDto);
     }
@@ -77,7 +91,7 @@ export class AuthService{
             throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
         }
 
-        if(!bcrypt.compare(refreshToken, user.refreshToken)){
+        if(!bcrypt.compareSync(refreshToken, user.refreshToken)){
             throw new HttpException('Access denied', HttpStatus.FORBIDDEN);           
         }
 
@@ -85,5 +99,33 @@ export class AuthService{
         await this.updateRefreshToken(userId, refreshToken);
 
         return tokens;
+    }
+
+    private async addOnlineUser(userId: string, adafruitToken: string){
+    
+        const url = `${AdafruitConfig.url}${AdafruitConfig.api.getUserInfo}?${AdafruitConfig.XAioKey}=${adafruitToken}`;
+        let res = await firstValueFrom(
+            this.httpService.get(url)
+                .pipe(
+                    catchError((error: AxiosError) => {
+                        throw new HttpException('AdafruitToken does not exist', HttpStatus.UNAUTHORIZED);
+                    })
+                )
+        );
+        const adafruitUsername = res.data.user.username;
+        this.onlineUserList.set(userId, {adafruitToken, adafruitUsername});
+        this.storeService.save(Object.fromEntries(this.onlineUserList));
+    
+    }
+
+    private deleteOnlineUser(userId: string){
+        if(this.onlineUserList.has(userId)){
+            this.onlineUserList.delete(userId);
+            this.storeService.save(this.onlineUserList);
+        }
+    }
+
+    getOnlineUser(userId: string){
+        return this.onlineUserList.get(userId);
     }
 }

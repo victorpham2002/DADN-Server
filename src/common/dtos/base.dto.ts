@@ -1,10 +1,15 @@
-import { plainToInstance, plainToClass, ClassConstructor, Expose } from "class-transformer"
+import { plainToInstance, ClassConstructor, Expose } from "class-transformer"
 import mongoose, { mongo } from "mongoose";
 // import {ClassConstructor} from '@nestjs/common';
 
 export class BaseDto {
-    
-    constructor(obj: Object){
-        return plainToInstance(this.constructor as any, obj, {excludeExtraneousValues: true});
+    constructor(data?: any) {
+        if (data) {
+          Object.assign(this, data);
+        }
+      }
+
+    static plainToInstance(obj: Object | Object[]) : any | any[] {
+        return plainToInstance(this, obj, {excludeExtraneousValues: true});
     }
 }

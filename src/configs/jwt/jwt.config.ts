@@ -3,7 +3,7 @@ const jwtConfig = {
     access: 'DAMH_AIMP_access_key',
     refresh: 'DAMH_AIMP_refresh_key',
     expiresIn: {
-        access: '10m',
+        access: '1d',
         refresh: '7d'
     }
 }

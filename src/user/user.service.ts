@@ -94,7 +94,7 @@ export class UserService{
 
     async validateUser(username: string, password: string) : Promise<UserDocument>{
         const user = await this.getUser(username);
-        if(!bcrypt.compare(password, user.password as string)){
+        if(!bcrypt.compareSync(password, user.password as string)){
             throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
         }
         return user;

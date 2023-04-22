@@ -17,7 +17,7 @@ export class AuthController{
     @HttpCode(HttpStatus.OK)
     @Post('login')
     @UseGuards(AuthGuard('local'))
-    signIn(@GetUser() user: UserDocument){
+    signIn(@GetUser() user: UserDocument): Promise<any>{
         return this.authService.signIn(user);
     }
 
@@ -30,7 +30,7 @@ export class AuthController{
     @UseGuards(AuthGuard('jwt'))
     logOut(@GetUser() userPayload: JwtPayload){
         const user = this.authService.logout(userPayload.sub);
-        return new ResponeUserDto(user);
+        return ResponeUserDto.plainToInstance(user);
     }
 
     @Get('refresh')

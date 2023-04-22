@@ -22,7 +22,6 @@ export class UserController{
     @UseGuards(AuthGuard('jwt'))
     async getAllUser(@Body('password') adminPassword: String) : Promise<ResponeUserDto[]>{
         const userList = await this.userService.getAllUser(adminPassword);
-        
         return ResponeUserDto.plainToInstance(userList);
     }
 

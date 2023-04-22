@@ -16,6 +16,10 @@ export class FeedDto extends BaseDto{
     @IsNotEmpty()
     name: string;
 
+    @Expose()
+    @IsNotEmpty()
+    last_value: number;
+
 }
 
 

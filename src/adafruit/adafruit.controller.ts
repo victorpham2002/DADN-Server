@@ -39,23 +39,22 @@ export class AdafruitController{
 
     @Post(':groupKey/pump_on')
     @UseGuards(AuthGuard('jwt'))
-    async turnPumpOn(@GetUser() user: JwtPayload, @Param('groupKey') groupKey: string): Promise<ResponseDataDto>{
+    async turnPumpOn(@GetUser() user: JwtPayload, @Param('groupKey') groupKey: string) : Promise<ResponseDataDto>{
         const data = await this.adafruitService.turnPumpOn(user.sub, groupKey);
         return ResponseDataDto.plainToInstance(data);
     }
 
     @Post(':groupKey/pump_off')
     @UseGuards(AuthGuard('jwt'))
-    async turnPumpOff(@GetUser() user: JwtPayload, @Param('groupKey') groupKey: string): Promise<ResponseDataDto>{
+    async turnPumpOff(@GetUser() user: JwtPayload, @Param('groupKey') groupKey: string) : Promise<ResponseDataDto>{
         const data = await this.adafruitService.turnPumpOff(user.sub, groupKey);
         return ResponseDataDto.plainToInstance(data);
     }
 
     @Post(':groupKey/fan_speed')
     @UseGuards(AuthGuard('jwt'))
-    async changeFanSpeed(@GetUser() user: JwtPayload, @Param('groupKey') groupKey: string, @Body() fanSpeed: ChangeFanSpeedDto): Promise<ResponseDataDto>{
+    async changeFanSpeed(@GetUser() user: JwtPayload, @Param('groupKey') groupKey: string, @Body() fanSpeed: ChangeFanSpeedDto) : Promise<ResponseDataDto>{
         const data = await this.adafruitService.changeFanSpeed(user.sub, groupKey, fanSpeed);
         return ResponseDataDto.plainToInstance(data);
     }
-
 }

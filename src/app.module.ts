@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
+import { UserModule } from './modules/user/user.module';
 import MongoDBConfig from './configs/database/mongodb/mongodb.config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './auth/auth.module';
-import { AdafruitModule } from './adafruit/adafruit.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { AdafruitModule } from './modules/adafruit/adafruit.module';
 import { ConfigModule } from '@nestjs/config';
+import { SettingModule } from './modules/setting/setting.module';
 const {
   username,
   password,
@@ -20,7 +21,8 @@ const {
     MongooseModule.forRoot(`mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${dbname}?retryWrites=true&w=majority`),
     AuthModule,
     AdafruitModule,
-    ConfigModule.forRoot()
+    ConfigModule.forRoot(),
+    SettingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

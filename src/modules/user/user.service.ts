@@ -12,6 +12,7 @@ import { catchError, firstValueFrom } from "rxjs";
 import { AxiosError } from "axios";
 import * as bcrypt from 'bcrypt';
 import bcryptConfig from "src/configs/bcrypt/bcrypt.config";
+import { Garden } from "src/modules/setting/schemas/garden.schema";
 
 const {password} = AdminConfig
 
@@ -89,7 +90,13 @@ export class UserService{
     }
 
     async deleteUser(id : string){
-        return this.userModel.findByIdAndDelete(id);
+        try{
+            const user = await this.userModel.findByIdAndDelete(id);
+            return user;
+        }
+        catch{
+            throw new HttpException('User ID was not existed', HttpStatus.NOT_FOUND);
+        }
     }
 
     async validateUser(username: string, password: string) : Promise<UserDocument>{

@@ -1,18 +1,21 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { catchError, firstValueFrom } from "rxjs";
-import { AuthService } from "src/auth/auth.service";
+import { AuthService } from "src/modules/auth/auth.service";
 import AdafruitConfig from "src/configs/adafruit/adafruit.config";
 import { AxiosError } from "axios";
 import { GroupDto } from "./dtos/groups.dto";
 import { ChangeFanSpeedDto, CreateDataDto } from "./dtos/data.dto";
+import { SettingService } from "../setting/setting.service";
+import { CreateGardenDto, MapGardenDto } from "../setting/dtos/garden.dto";
 
 
 @Injectable()
 export class AdafruitService{
     constructor(
         private readonly httpService: HttpService,
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
+        private readonly settingService: SettingService,
     ){}
 
     async getGroups(userId: string) : Promise<any[]>{
@@ -28,6 +31,8 @@ export class AdafruitService{
         );
 
         const data = res.data as Object[];
+        const mapDatas = data as MapGardenDto[];
+        console.log(await this.settingService.mapGardenFromAdafruit(userId, mapDatas.filter(data => data.key != 'default')));
         return data;
     }    
 

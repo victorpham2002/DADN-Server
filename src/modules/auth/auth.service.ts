@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { UserService } from "src/user/user.service";
+import { UserService } from "src/modules/user/user.service";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UserDocument } from "src/user/schemas/user.schema";
+import { UserDocument } from "src/modules/user/schemas/user.schema";
 import { JwtPayload } from "./types/jwtPayload.type";
 import jwtConfig from "src/configs/jwt/jwt.config";
 import bcryptConfig from "src/configs/bcrypt/bcrypt.config";
-import { CreateUserDto, UpdateUserDto } from "src/user/dtos/user.dto";
-import { StoreService } from "src/store/store.service";
+import { CreateUserDto, UpdateUserDto } from "src/modules/user/dtos/user.dto";
+import { StoreService } from "src/modules/store/store.service";
 import { HttpService } from "@nestjs/axios";
 import AdafruitConfig from "src/configs/adafruit/adafruit.config";
 import { catchError, firstValueFrom } from "rxjs";

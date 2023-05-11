@@ -1,8 +1,8 @@
 import { Controller, UseGuards, Get, Post, Put, Patch, Delete, Param , Body} from "@nestjs/common";
 import { AdafruitService } from "./adafruit.service";
 import { AuthGuard } from "@nestjs/passport";
-import { GetUser } from "src/auth/decorators/getUser.decorator";
-import { JwtPayload } from "src/auth/types/jwtPayload.type";
+import { GetUser } from "src/modules/auth/decorators/getUser.decorator";
+import { JwtPayload } from "src/modules/auth/types/jwtPayload.type";
 import { FeedDto, GroupDto } from "./dtos/groups.dto";
 import { plainToInstance } from "class-transformer";
 import { ChangeFanSpeedDto, CreateDataDto, ResponseDataDto } from "./dtos/data.dto";

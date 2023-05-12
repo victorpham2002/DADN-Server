@@ -81,9 +81,8 @@ export class SettingService{
         return 'success';
     }
 
-    async updateCondition(userId: string, key: string, conditionData: UpdateConditionDto){
+    async updateCondition(userId: string, key: string, conditionData: UpdateConditionDto): Promise<any>{
         try{
-            console.log(conditionData);
             const garden = await this.gardenModel.findOne({user: new mongoose.Types.ObjectId(userId), key: key});
             const setting = await this.settingModel.findOne({garden: garden._id})
             const condition = await this.conditionModel.updateOne({setting: setting._id, type: conditionData.type}, conditionData, {runValidators: true});
@@ -95,4 +94,17 @@ export class SettingService{
         }
 
     }   
+
+    async getConditions(userId: string, key: string): Promise<any[]>{
+        try{
+            const garden = await this.gardenModel.findOne({user: new mongoose.Types.ObjectId(userId), key: key});
+            const setting = await this.settingModel.findOne({garden: garden._id})
+            const conditions = await this.conditionModel.find({setting: setting._id});
+            return conditions;
+        }
+        catch(err){
+            console.log(err);
+            throw new HttpException('bad request', HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -12,12 +12,12 @@ export class Condition{
     @Prop({type: String, enum: ConditionOptionTypes, required: true, default: ConditionOptionTypes.CUSTOMIZE})
     option: ConditionOptionTypes;
 
-    @Prop({type: Number, required: true, default: 1})
+    @Prop({type: Number, required: true, default: 0})
     from: number;
 
-    @Prop({type: Number, required: true, default: 0, validate: {
-        validator: function(this: ConditionDocument, val: number){
-            return val >= this.from;
+    @Prop({type: Number, required: true, default: 1, validate: {
+        validator: function(val: number){
+            return val >= this.get('from');
         },
         message: () => '"to" field must be greater than or equal "from" field!'
     }})
@@ -31,5 +31,8 @@ export const ConditionSchema = SchemaFactory.createForClass(Condition);
 
 export const ConditionFactory = {
     name: Condition.name,
-    useFactory: () => ConditionSchema
+    useFactory: async () => { 
+        const conditionSchema = ConditionSchema;
+        return conditionSchema;
+    }
 }

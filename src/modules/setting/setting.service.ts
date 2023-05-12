@@ -83,6 +83,7 @@ export class SettingService{
 
     async updateCondition(userId: string, key: string, conditionData: UpdateConditionDto){
         try{
+            console.log(conditionData);
             const garden = await this.gardenModel.findOne({user: new mongoose.Types.ObjectId(userId), key: key});
             const setting = await this.settingModel.findOne({garden: garden._id})
             const condition = await this.conditionModel.updateOne({setting: setting._id, type: conditionData.type}, conditionData, {runValidators: true});

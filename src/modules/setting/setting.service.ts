@@ -83,7 +83,7 @@ export class SettingService{
     async updateCondition(userId: string, key: string, conditionData: UpdateConditionDto): Promise<any>{
         try{
             const setting = await this.getSetting(userId, key);
-            const condition = await this.conditionModel.updateOne({setting: setting._id, type: conditionData.type}, conditionData, {runValidators: true});
+            const condition = await this.conditionModel.findOneAndUpdate({setting: setting._id, type: conditionData.type}, conditionData, {runValidators: true});
             return condition;
         }
         catch(err){

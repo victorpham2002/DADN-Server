@@ -1,13 +1,11 @@
 import { Injectable, Inject, HttpException, HttpStatus } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Device } from "./schemas/device.schema";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { Time } from "./schemas/time.schema";
 import { UpdateDeviceDto } from "./dtos/device.dto";
 import { SettingService } from "../setting/setting.service";
-import { HttpStatusCode } from "axios";
-import { set } from "lodash";
-import { CreateTimeDto } from "./dtos/time.dto";
+import { CreateTimeDto, UpdateTimeDto } from "./dtos/time.dto";
 import { DeviceTypes } from "./schemas/types/device.type";
 
 @Injectable()
@@ -21,7 +19,7 @@ export class ScheduleService{
     async updateDevice(userId: string, key: string, deviceData: UpdateDeviceDto): Promise<any>{
         try{
             const setting = await this.settingService.getSetting(userId, key);
-            const device = await this.deviceModel.updateOne({setting: setting._id, type: deviceData.type}, deviceData);
+            const device = await this.deviceModel.findOneAndUpdate({setting: setting._id, type: deviceData.type}, deviceData);
             return device;
         }
         catch(err){
@@ -68,6 +66,25 @@ export class ScheduleService{
         }
     }
 
-    async updateTime(){}
+    async updateTime(timeId: string, timeData: UpdateTimeDto){
+        try{
+            const time = this.timeModel.findByIdAndUpdate(new mongoose.Types.ObjectId(timeId), timeData); 
+            return time;
+        }
+        catch(err){
+            console.log(err);
+            throw new HttpException('bad request', HttpStatus.BAD_REQUEST);
+        }
+    }
     
+    async deleteTime(timeId: string){
+        try{
+            const time = this.timeModel.findByIdAndDelete(new mongoose.Types.ObjectId(timeId)); 
+            return time;
+        }
+        catch(err){
+            console.log(err);
+            throw new HttpException('bad request', HttpStatus.BAD_REQUEST);
+        }
+    }
 }

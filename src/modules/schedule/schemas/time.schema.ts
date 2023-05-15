@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 import { Setting } from "src/modules/setting/schemas/setting.schema";
 import { Device } from "./device.schema";
+import { TimeRepeatType } from "../types/time.type";
 
 
 @Schema({timestamps: true})
@@ -24,6 +25,9 @@ export class Time{
 
     @Prop({type: Number, required: true, default: 0})
     limit: number;
+
+    @Prop({type: String, enum: TimeRepeatType, required: true, default: TimeRepeatType.ONCE})
+    repeat: TimeRepeatType;
 
     @Prop({type: mongoose.Types.ObjectId, ref: 'Device'})
     device: Device;

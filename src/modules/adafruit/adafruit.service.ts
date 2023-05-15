@@ -30,10 +30,10 @@ export class AdafruitService{
                 )
         );
 
-        const data = res.data as Object[];
-        const mapDatas = data as MapGardenDto[];
-        console.log(await this.settingService.mapGardenFromAdafruit(userId, mapDatas.filter(data => data.key != 'default')));
-        return data;
+        const data = res.data as MapGardenDto[];
+        const mapDatas = data.filter(data => data.key != 'default') as MapGardenDto[];
+        await this.settingService.mapGardenFromAdafruit(userId, mapDatas);
+        return mapDatas;
     }    
 
     async getFeedData(userId: string, feedKey: string) : Promise<any[]>{

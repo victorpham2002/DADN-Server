@@ -7,7 +7,7 @@ export class BaseDto {
         if (data) {
           Object.assign(this, data);
         }
-      }
+    }
 
     static plainToInstance(obj: Object | Object[]) : any | any[] {
         return plainToInstance(this, obj, {excludeExtraneousValues: true});

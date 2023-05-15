@@ -7,8 +7,7 @@ import * as _ from 'lodash';
 import { UpdateConditionDto } from "./dtos/condition.dto";
 import { Setting } from "./schemas/setting.schema";
 import { Condition } from "./schemas/condition.schema";
-import { error } from "console";
-import { throwError } from "rxjs";
+
 
 @Injectable()
 export class SettingService{
@@ -83,8 +82,7 @@ export class SettingService{
 
     async updateCondition(userId: string, key: string, conditionData: UpdateConditionDto): Promise<any>{
         try{
-            const garden = await this.gardenModel.findOne({user: new mongoose.Types.ObjectId(userId), key: key});
-            const setting = await this.settingModel.findOne({garden: garden._id})
+            const setting = await this.getSetting(userId, key);
             const condition = await this.conditionModel.updateOne({setting: setting._id, type: conditionData.type}, conditionData, {runValidators: true});
             return condition;
         }
@@ -97,10 +95,21 @@ export class SettingService{
 
     async getConditions(userId: string, key: string): Promise<any[]>{
         try{
-            const garden = await this.gardenModel.findOne({user: new mongoose.Types.ObjectId(userId), key: key});
-            const setting = await this.settingModel.findOne({garden: garden._id})
+            const setting = await this.getSetting(userId, key);
             const conditions = await this.conditionModel.find({setting: setting._id});
             return conditions;
+        }
+        catch(err){
+            console.log(err);
+            throw new HttpException('bad request', HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    async getSetting(userId: string, key: string){
+        try{
+            const garden = await this.gardenModel.findOne({user: new mongoose.Types.ObjectId(userId), key: key});
+            const setting = await this.settingModel.findOne({garden: garden._id})
+            return setting;
         }
         catch(err){
             console.log(err);

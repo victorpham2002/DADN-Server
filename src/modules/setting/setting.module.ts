@@ -5,6 +5,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { SettingFactory } from "./schemas/setting.schema";
 import { GardenFactory } from "./schemas/garden.schema";
 import { ConditionFactory } from "./schemas/condition.schema";
+import { DeviceFactory } from "../schedule/schemas/device.schema";
 
 @Module({
     imports: [

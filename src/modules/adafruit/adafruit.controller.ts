@@ -19,7 +19,7 @@ export class AdafruitController{
     @UseGuards(AuthGuard('jwt'))
     async getGroups(@GetUser() user: JwtPayload) : Promise<GroupDto[]>{
         const data = await this.adafruitService.getGroups(user.sub);
-        let groups = (GroupDto.plainToInstance(data) as GroupDto[]).filter(group => group.key !== 'default');
+        const groups = GroupDto.plainToInstance(data);
         return groups;
     }
 

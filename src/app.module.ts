@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AdafruitModule } from './modules/adafruit/adafruit.module';
 import { ConfigModule } from '@nestjs/config';
 import { SettingModule } from './modules/setting/setting.module';
+import { ScheduleModule } from './modules/schedule/schedule.module';
 const {
   username,
   password,
@@ -23,6 +24,7 @@ const {
     AdafruitModule,
     ConfigModule.forRoot(),
     SettingModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

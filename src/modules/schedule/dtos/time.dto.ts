@@ -5,6 +5,7 @@ import { DeviceTypes } from "../schemas/types/device.type";
 import { TimeRepeatType } from "../types/time.type";
 import { BaseDto } from "src/common/dtos/base.dto";
 import mongoose from "mongoose";
+import { TimeActivatedType } from "../schemas/types/time.type";
 
 export class CreateTimeDto extends BaseDto{
     @Expose()
@@ -31,6 +32,12 @@ export class CreateTimeDto extends BaseDto{
     @Min(0)
     @Transform(({ value }) => parseInt(value, 10))
     limit: number;
+    
+    @Expose()
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsEnum(TimeActivatedType, {each: true})
+    activated: TimeActivatedType;
 
     @Expose()
     @ApiProperty()
@@ -80,6 +87,12 @@ export class UpdateTimeDto extends BaseDto{
     @Expose()
     @ApiProperty()
     @IsNotEmpty()
+    @IsEnum(TimeActivatedType, {each: true})
+    activated: TimeActivatedType;
+
+    @Expose()
+    @ApiProperty()
+    @IsNotEmpty()
     @IsEnum(TimeRepeatType, {each: true})
     repeat: TimeRepeatType;
 }
@@ -105,4 +118,9 @@ export class ResponseTimeDto extends BaseDto{
     @IsNotEmpty()
     @IsEnum(TimeRepeatType, {each: true})
     repeat: TimeRepeatType;
+
+    @Expose()
+    @IsNotEmpty()
+    @IsEnum(TimeActivatedType, {each: true})
+    activated: TimeActivatedType;
 }

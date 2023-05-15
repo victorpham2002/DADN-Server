@@ -21,7 +21,7 @@
     "deploy": "npm install && npm run build && npm run start:dev"
   },
   "dependencies": {
-    "@nestjs/cli": "^9.3.0",
+    "@nestjs/cli": "^9.4.2",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.4.0",
     "@nestjs/config": "^2.3.1",
